@@ -13,6 +13,6 @@ class Task(models.Model):
     deadline = models.DateTimeField(auto_now_add=True)
     priority = models.IntegerField()
     status_of_tasks = models.CharField(max_length=255)
-    date_of_create = models.DateTimeField(auto_now_add=True)
+    date_of_create = models.DateTimeField(auto_now_add=True) # Владислав топ
 
 
