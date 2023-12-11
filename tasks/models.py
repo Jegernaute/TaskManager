@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 class Category(models.Model):
     name_of_category = models.CharField(max_length=255)
 
@@ -13,6 +13,6 @@ class Task(models.Model):
     deadline = models.DateTimeField(auto_now_add=True)
     priority = models.IntegerField()
     status_of_tasks = models.CharField(max_length=255)
-    date_of_create = models.DateTimeField(auto_now_add=True)
+    date_of_create = models.DateTimeField(auto_now_add=True) # Владислав топ
 
 

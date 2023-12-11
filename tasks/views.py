@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 
 from .models import Task, Category
 from .serializers import TaskSerializer, CategorySerializer
@@ -8,9 +10,19 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg import openapi
+from .serializers import UserRegistrationSerializer
+@api_view(['POST'])
+def register_user(request):
+    serializer = UserRegistrationSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class TaskList(APIView):
-
+    permission_classes = [IsAuthenticatedOrReadOnly]
     @swagger_auto_schema(
         operation_description="Get a list of tasks",
         responses={200: openapi.Response('List of tasks', TaskSerializer(many=True))}
@@ -34,7 +46,7 @@ class TaskList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class TaskDetail(APIView):
-
+    permission_classes = [IsAdminUser]
     def get_object(self, pk):
         try:
             return Task.objects.get(pk=pk)
@@ -86,7 +98,7 @@ class TaskDetail(APIView):
 
 
 class CategoryList(APIView):
-
+    permission_classes = [IsAuthenticatedOrReadOnly]
     @swagger_auto_schema(
         operation_description="Get a list of category",
         responses={200: openapi.Response('List of category', CategorySerializer(many=True))}
@@ -111,7 +123,7 @@ class CategoryList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CategoryDetail(APIView):
-
+    permission_classes = [IsAdminUser]
     def get_object(self, pk):
         try:
             return Category.objects.get(pk=pk)
